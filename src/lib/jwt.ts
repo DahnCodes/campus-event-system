@@ -20,5 +20,6 @@ export function signToken(payload: JwtPayload) {
 }
 
 export function verifyToken(token: string) {
+  console.log("TOKEN RECEIVED:", JSON.stringify(token));
   return jwt.verify(token, JWT_SECRET) as JwtPayload;
 }
