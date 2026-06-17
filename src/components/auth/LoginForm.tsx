@@ -1,74 +1,72 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import api from '@/lib/api'
-import { loginSchema } from '@/schemas/auth.schema'
-import { AlertCircle } from 'lucide-react'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
+import { loginSchema } from '@/schemas/auth.schema';
+import { AlertCircle } from 'lucide-react';
 
 export default function LoginForm() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-  })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear field error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }))
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
     // Clear general error
-    if (error) setError('')
-  }
+    if (error) setError('');
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
-    setErrors({})
-    setIsLoading(true)
+    e.preventDefault();
+    setError('');
+    setErrors({});
+    setIsLoading(true);
 
     try {
       // Validate form data
-      const validationResult = loginSchema.safeParse(formData)
+      const validationResult = loginSchema.safeParse(formData);
       if (!validationResult.success) {
-        const fieldErrors: Record<string, string> = {}
+        const fieldErrors: Record<string, string> = {};
         validationResult.error.issues.forEach((issue) => {
           if (issue.path[0]) {
-            fieldErrors[issue.path[0] as string] = issue.message
+            fieldErrors[issue.path[0] as string] = issue.message;
           }
-        })
-        setErrors(fieldErrors)
-        setIsLoading(false)
-        return
+        });
+        setErrors(fieldErrors);
+        setIsLoading(false);
+        return;
       }
 
       // Call login API
       const response = await api.post('/auth/login', {
         email: formData.email,
         password: formData.password,
-      })
+      });
 
       if (response.data.success) {
-        router.push('/dashboard')
+        // Redirect to dashboard or home
+        router.push('/');
       } else {
-        setError(response.data.message || 'Login failed')
+        setError(response.data.message || 'Login failed');
       }
-
-      console.log('LOGIN RESPONSE:', response.data)
     } catch (err: any) {
-      const errorMessage =
-        err.response?.data?.message || 'An error occurred during login'
-      setError(errorMessage)
+      const errorMessage = err.response?.data?.message || 'An error occurred during login';
+      setError(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -80,10 +78,7 @@ export default function LoginForm() {
       )}
 
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-foreground mb-2"
-        >
+        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
           Email Address
         </label>
         <input
@@ -99,16 +94,11 @@ export default function LoginForm() {
           }`}
           placeholder="you@example.com"
         />
-        {errors.email && (
-          <p className="text-sm text-red-600 mt-1.5">{errors.email}</p>
-        )}
+        {errors.email && <p className="text-sm text-red-600 mt-1.5">{errors.email}</p>}
       </div>
 
       <div>
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium text-foreground mb-2"
-        >
+        <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
           Password
         </label>
         <input
@@ -124,9 +114,7 @@ export default function LoginForm() {
           }`}
           placeholder="••••••••"
         />
-        {errors.password && (
-          <p className="text-sm text-red-600 mt-1.5">{errors.password}</p>
-        )}
+        {errors.password && <p className="text-sm text-red-600 mt-1.5">{errors.password}</p>}
       </div>
 
       <button
@@ -137,5 +125,5 @@ export default function LoginForm() {
         {isLoading ? 'Signing in...' : 'Sign In'}
       </button>
     </form>
-  )
+  );
 }

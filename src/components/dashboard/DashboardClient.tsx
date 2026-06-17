@@ -15,7 +15,7 @@ interface User {
   id: string;
   fullName: string;
   email: string;
-  role: 'student' | 'organizer';
+  role: 'user' | 'organizer' | 'admin';
 }
 
 export default function DashboardClient() {
@@ -73,7 +73,7 @@ export default function DashboardClient() {
       const response = await api.post('/user/become-organizer');
       setUser(response.data.user);
     } catch (err) {
-      console.error('Failed to become organizer:', err);
+      console.error('[v0] Failed to become organizer:', err);
       setError('Failed to upgrade to organizer. Please try again.');
     }
   };
@@ -95,10 +95,10 @@ export default function DashboardClient() {
       {/* Main Content */}
       <main className="mx-auto max-w-6xl px-6 py-8 sm:px-8">
         {/* Organizer Promotion Card */}
-        {user && user.role === 'student' && (
-        <div className="mb-8">
-    <OrganizerPromotionCard onBecomeOrganizer={handleBecomeOrganizer} />
-  </div>
+        {user && user.role === 'user' && (
+          <div className="mb-8">
+            <OrganizerPromotionCard onBecomeOrganizer={handleBecomeOrganizer} />
+          </div>
         )}
 
         {/* Tab Navigation */}
@@ -114,10 +114,7 @@ export default function DashboardClient() {
           )}
         </div>
 
-      
-
-
-{/* Error State */}
+        {/* Error State */}
         {error && (
           <div className="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3">
             <p className="text-sm text-red-800">{error}</p>
