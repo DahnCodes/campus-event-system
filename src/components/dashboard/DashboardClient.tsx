@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import api from '@/lib/api';
 import TabNavigation from './TabNavigation';
 import EventGrid from './EventGrid';
@@ -101,8 +102,16 @@ export default function DashboardClient() {
         )}
 
         {/* Tab Navigation */}
-        <div className="mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+          {user && (user.role === 'organizer' || user.role === 'admin') && activeTab === 'created-events' && (
+            <Link
+              href="/events/new"
+              className="rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
+            >
+              Create Event
+            </Link>
+          )}
         </div>
 
       
