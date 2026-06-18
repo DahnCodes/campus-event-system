@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { format } from 'date-fns';
 import type { Event } from '@/types/event';
 
@@ -15,7 +16,8 @@ export default function EventCard({ event }: EventCardProps) {
   const spotsRemaining = event.capacity - event.registeredCount;
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white transition-all hover:border-neutral-300 hover:shadow-sm">
+    <Link href={`/events/${event._id}`}>
+      <div className="group relative flex flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white transition-all hover:border-neutral-300 hover:shadow-sm">
       {/* Cover Image */}
       {event.coverImage && (
         <div className="relative aspect-video overflow-hidden bg-neutral-100">
@@ -95,6 +97,7 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }
